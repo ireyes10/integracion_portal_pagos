@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Test Link&buy</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">Test Link & Buy</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <!-- <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                  </li> -->
+                  
+                </ul>
+              </div>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <div class="row">
+              <div class="col-4">
+                <h3>Example request purchase</h3>
+                <p><b>URL:</b> https://linkbuy.infile.com/api/compras/ </p>
+                <p><b>HEADER:</b> <pre id="headers-api"></pre></p>
+                <p><b>BODY:</b> <pre id="obj-purchase"></pre></p>
+              </div>
+              <div class="col-3">
+                <h3>Request for create purchase and generate code transaccion</h3>
+                <form>
+                  <div class="mb-3">
+                    <label for="formControLlaveApi" class="form-label">KEY API</label>
+                    <input type="email" class="form-control" id="formControLlaveApi" value="70c3baad8c29a7ee1840cfb1f7dcd3" placeholder="">
+
+                    <label for="formControName" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="formControName" value="">
+
+                    <label for="formControEmail" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="formControEmail" value="" placeholder="name@example.com">
+
+                    <label for="formControSendEmail" class="form-label">Send Email</label>
+                    <input type="checkbox" id="formControSendEmail" >
+
+                  </div>
+                  <button type="button" id="btn-generate-data-purchase" class="btn btn-primary">Generate Data Purchase</button>
+                  <button type="button" id="btn-send-purchase" class="btn btn-success" style="display:none;">Send Purchase</button>
+                </form> 
+                <div>
+                  <pre id="new-object-purchase"></pre>
+                </div>
+              </div>
+              <div class="col-5">
+                <h3>Response to purchase</h3>
+                <pre id="response-purchase"></pre>
+              </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+
+    </body>
+    <script type="text/javascript" >
+      (()=>{
+        'use strict'
+        const objPurchase = document.getElementById("obj-purchase")
+        const heradersApi = document.getElementById("headers-api")
+        const objResponse = document.getElementById("response-purchase")
+        const url = "https://linkbuy.infile.com/api/compras/" 
+        const purchase_json = {
+              "compra":{
+                  "fecha_transaccion":"2020-08-05 10:48:03 -0600", 
+                  "importe_total": 200.0, 
+                  "nombre":"", 
+                  "email":"", 
+                  "descripcion_compra":"Test Generate Purchase ", 
+                  "nit":"C/F",
+                  "nombre_entrega": "", 
+                  "titulo_compra":"buy monthly membership link & buy ",
+                  "codigo_referencia_cliente":"",
+                  "llave_uso_api":"da8a1865d325818adeb0fa6b185b09",
+                  "enviar_correo": 0,
+                  "detalles":[
+                      {
+                          "cantidad":1, 
+                          "producto": "buy monthly membership link & buy", 
+                          "descripcion": "buy monthly membership link & buy", 
+                          "codigo_referencia_producto": "10017", 
+                          "precio_unitario":100,
+                          "precio": 100.00
+                      },
+                      {
+                          "cantidad":1, 
+                          "producto": "buy monthly membership link & buy", 
+                          "descripcion": "buy monthly membership link & buy", 
+                          "codigo_referencia_producto": "10017", 
+                          "precio_unitario":100,
+                          "precio": 100.00
+                      }
+
+                  ]
+              }
+          }
+          const headers_api = {
+            "Content-Type": "application/json",
+            "Usuario-Api": "ITDEMO",
+            "Llave-Api": "76A930503C7647C4B07FC74B28595A8E"
+          }
+          objPurchase.innerHTML = JSON.stringify(purchase_json, null, 4)
+          heradersApi.innerHTML = JSON.stringify(headers_api, null, 4)
+
+          //Events
+
+
+          const btnDataPurchase = document.querySelector('#btn-generate-data-purchase');
+          const newObjPurchase = document.querySelector('#new-object-purchase');
+          const btnCreatePurchase = document.querySelector('#btn-send-purchase');
+
+          btnDataPurchase.addEventListener('click', ()=> {
+            let llave_uso_api  = document.getElementById('formControLlaveApi').value
+            let name_purchase  = document.getElementById('formControName').value
+            let email_purchase = document.getElementById('formControEmail').value
+            let checkbox_send_email = document.getElementById('formControSendEmail') 
+            let send_email = 0
+            if (checkbox_send_email.checked){
+              send_email = 1
+            }
+            purchase_json["compra"]["llave_uso_api"] = llave_uso_api
+            purchase_json["compra"]["nombre"] = name_purchase
+            purchase_json["compra"]["nombre_entrega"] = name_purchase
+            purchase_json["compra"]["email"] = email_purchase
+            purchase_json["compra"]["enviar_correo"] = send_email
+            newObjPurchase.innerHTML = JSON.stringify(purchase_json, null, 4)
+            btnDataPurchase.style.display = "none";
+            btnCreatePurchase.style.display = "block";
+          });
+
+
+          btnCreatePurchase.addEventListener('click', async () =>{
+
+            let responsePurchase = await fetch(url,{
+              method: "POST",
+              headers: headers_api,
+              body: JSON.stringify(purchase_json)
+            });
+            const content = await responsePurchase.json();
+            btnDataPurchase.style.display = "block";
+            btnCreatePurchase.style.display = "none";
+            newObjPurchase.innerHTML = ""
+            objResponse.innerHTML = JSON.stringify(content, null, 4);
+
+            document.getElementById('formControName').value = ""
+            document.getElementById('formControEmail').value = ""
+            let checkbox_send_email = document.getElementById('formControSendEmail') 
+            checkbox_send_email.checked = false
+   
+          });
+
+
+
+
+      })();
+     
+    </script>
+</html>
