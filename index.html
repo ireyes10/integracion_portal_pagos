@@ -36,8 +36,17 @@
                 <h3>Request for create purchase and generate code transaccion</h3>
                 <form>
                   <div class="mb-3">
-                    <label for="formControLlaveApi" class="form-label">KEY API</label>
-                    <input type="email" class="form-control" id="formControLlaveApi" value="70c3baad8c29a7ee1840cfb1f7dcd3" placeholder="">
+
+                    <label for="formControUserApi" class="form-label">Header User API</label>
+                    <input type="text" class="form-control" id="formControUserApi" value="" placeholder="">
+
+                    <label for="formControLlaveApi" class="form-label">Header Key API</label>
+                    <input type="text" class="form-control" id="formControLlaveApi" value="" placeholder="">
+
+
+
+                    <label for="formControLlaveUsoApi" class="form-label">KEY GATEWAY API</label>
+                    <input type="text" class="form-control" id="formControLlaveUsoApi" value="" placeholder="">
 
                     <label for="formControName" class="form-label">Name</label>
                     <input type="text" class="form-control" id="formControName" value="">
@@ -110,8 +119,8 @@
           }
           const headers_api = {
             "Content-Type": "application/json",
-            "Usuario-Api": "ITDEMO",
-            "Llave-Api": "76A930503C7647C4B07FC74B28595A8E"
+            "Usuario-Api": "",
+            "Llave-Api": ""
           }
           objPurchase.innerHTML = JSON.stringify(purchase_json, null, 4)
           heradersApi.innerHTML = JSON.stringify(headers_api, null, 4)
@@ -124,19 +133,27 @@
           const btnCreatePurchase = document.querySelector('#btn-send-purchase');
 
           btnDataPurchase.addEventListener('click', ()=> {
-            let llave_uso_api  = document.getElementById('formControLlaveApi').value
-            let name_purchase  = document.getElementById('formControName').value
-            let email_purchase = document.getElementById('formControEmail').value
+            let header_user_api = document.getElementById('formControUserApi').value
+            let header_key_api  = document.getElementById('formControLlaveApi').value
+
+            let llave_uso_api   = document.getElementById('formControLlaveUsoApi').value
+            let name_purchase   = document.getElementById('formControName').value
+            let email_purchase  = document.getElementById('formControEmail').value
             let checkbox_send_email = document.getElementById('formControSendEmail') 
             let send_email = 0
             if (checkbox_send_email.checked){
               send_email = 1
             }
-            purchase_json["compra"]["llave_uso_api"] = llave_uso_api
-            purchase_json["compra"]["nombre"] = name_purchase
+
+            headers_api["Usuario-Api"] =  header_user_api
+            headers_api["Llave-Api"]   =  header_key_api
+
+            purchase_json["compra"]["llave_uso_api"]  = llave_uso_api
+            purchase_json["compra"]["nombre"]         = name_purchase
             purchase_json["compra"]["nombre_entrega"] = name_purchase
-            purchase_json["compra"]["email"] = email_purchase
-            purchase_json["compra"]["enviar_correo"] = send_email
+            purchase_json["compra"]["email"]          = email_purchase
+            purchase_json["compra"]["enviar_correo"]  = send_email
+
             newObjPurchase.innerHTML = JSON.stringify(purchase_json, null, 4)
             btnDataPurchase.style.display = "none";
             btnCreatePurchase.style.display = "block";
@@ -156,8 +173,8 @@
             newObjPurchase.innerHTML = ""
             objResponse.innerHTML = JSON.stringify(content, null, 4);
 
-            document.getElementById('formControName').value = ""
-            document.getElementById('formControEmail').value = ""
+            document.getElementById('formControName').value   = ""
+            document.getElementById('formControEmail').value  = ""
             let checkbox_send_email = document.getElementById('formControSendEmail') 
             checkbox_send_email.checked = false
    
