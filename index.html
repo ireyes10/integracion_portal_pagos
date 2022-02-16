@@ -16,9 +16,9 @@
               </button>
               <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  <!-- <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                  </li> -->
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="./paymet.html"> Payment</a>
+                  </li> 
                   
                 </ul>
               </div>
@@ -67,6 +67,7 @@
               </div>
               <div class="col-5">
                 <h3>Response to purchase</h3>
+                <p id="transaction-code"></p>
                 <pre id="response-purchase"></pre>
               </div>
             </div>
@@ -82,6 +83,7 @@
         const objPurchase = document.getElementById("obj-purchase")
         const heradersApi = document.getElementById("headers-api")
         const objResponse = document.getElementById("response-purchase")
+        const divResponse = document.getElementById("column-response-purchase")
         const url = "https://linkbuy.infile.com/api/compras/" 
         const purchase_json = {
               "compra":{
@@ -117,70 +119,78 @@
                   ]
               }
           }
-          const headers_api = {
-            "Content-Type": "application/json",
-            "Usuario-Api": "",
-            "Llave-Api": ""
-          }
-          objPurchase.innerHTML = JSON.stringify(purchase_json, null, 4)
-          heradersApi.innerHTML = JSON.stringify(headers_api, null, 4)
+        const headers_api = {
+          "Content-Type": "application/json",
+          "Usuario-Api": "",
+          "Llave-Api": ""
+        }
+        objPurchase.innerHTML = JSON.stringify(purchase_json, null, 4)
+        heradersApi.innerHTML = JSON.stringify(headers_api, null, 4)
 
           //Events
 
 
-          const btnDataPurchase = document.querySelector('#btn-generate-data-purchase');
-          const newObjPurchase = document.querySelector('#new-object-purchase');
-          const btnCreatePurchase = document.querySelector('#btn-send-purchase');
+        const btnDataPurchase = document.querySelector('#btn-generate-data-purchase');
+        const newObjPurchase = document.querySelector('#new-object-purchase');
+        const btnCreatePurchase = document.querySelector('#btn-send-purchase');
 
-          btnDataPurchase.addEventListener('click', ()=> {
-            let header_user_api = document.getElementById('formControUserApi').value
-            let header_key_api  = document.getElementById('formControLlaveApi').value
+        btnDataPurchase.addEventListener('click', ()=> {
+          let header_user_api = document.getElementById('formControUserApi').value
+          let header_key_api  = document.getElementById('formControLlaveApi').value
 
-            let llave_uso_api   = document.getElementById('formControLlaveUsoApi').value
-            let name_purchase   = document.getElementById('formControName').value
-            let email_purchase  = document.getElementById('formControEmail').value
-            let checkbox_send_email = document.getElementById('formControSendEmail') 
-            let send_email = 0
-            if (checkbox_send_email.checked){
-              send_email = 1
-            }
+          let llave_uso_api   = document.getElementById('formControLlaveUsoApi').value
+          let name_purchase   = document.getElementById('formControName').value
+          let email_purchase  = document.getElementById('formControEmail').value
+          let checkbox_send_email = document.getElementById('formControSendEmail') 
+          let send_email = 0
+          if (checkbox_send_email.checked){
+            send_email = 1
+          }
 
-            headers_api["Usuario-Api"] =  header_user_api
-            headers_api["Llave-Api"]   =  header_key_api
+          headers_api["Usuario-Api"] =  header_user_api
+          headers_api["Llave-Api"]   =  header_key_api
 
-            purchase_json["compra"]["llave_uso_api"]  = llave_uso_api
-            purchase_json["compra"]["nombre"]         = name_purchase
-            purchase_json["compra"]["nombre_entrega"] = name_purchase
-            purchase_json["compra"]["email"]          = email_purchase
-            purchase_json["compra"]["enviar_correo"]  = send_email
+          purchase_json["compra"]["llave_uso_api"]  = llave_uso_api
+          purchase_json["compra"]["nombre"]         = name_purchase
+          purchase_json["compra"]["nombre_entrega"] = name_purchase
+          purchase_json["compra"]["email"]          = email_purchase
+          purchase_json["compra"]["enviar_correo"]  = send_email
 
-            newObjPurchase.innerHTML = JSON.stringify(purchase_json, null, 4)
-            btnDataPurchase.style.display = "none";
-            btnCreatePurchase.style.display = "block";
+          newObjPurchase.innerHTML = JSON.stringify(purchase_json, null, 4)
+          btnDataPurchase.style.display = "none";
+          btnCreatePurchase.style.display = "block";
+        });
+
+
+        btnCreatePurchase.addEventListener('click', async () =>{
+
+          let responsePurchase = await fetch(url,{
+            method: "POST",
+            headers: headers_api,
+            body: JSON.stringify(purchase_json)
           });
+          const content = await responsePurchase.json();
+          console.log(content["compra"].codigo_transaccion);
+
+          if (content["compra"].codigo_transaccion != null){
+            let transactionCode = content["compra"].codigo_transaccion;
+            document.getElementById('transaction-code').text = transactionCode;
+          }
 
 
-          btnCreatePurchase.addEventListener('click', async () =>{
+          btnDataPurchase.style.display = "block";
+          btnCreatePurchase.style.display = "none";
+          newObjPurchase.innerHTML = ""
+          objResponse.innerHTML = JSON.stringify(content, null, 4);
 
-            let responsePurchase = await fetch(url,{
-              method: "POST",
-              headers: headers_api,
-              body: JSON.stringify(purchase_json)
-            });
-            const content = await responsePurchase.json();
-            btnDataPurchase.style.display = "block";
-            btnCreatePurchase.style.display = "none";
-            newObjPurchase.innerHTML = ""
-            objResponse.innerHTML = JSON.stringify(content, null, 4);
+          document.getElementById('formControName').value   = ""
+          document.getElementById('formControEmail').value  = ""
+          let checkbox_send_email = document.getElementById('formControSendEmail') 
+          checkbox_send_email.checked = false
+  
+        });
 
-            document.getElementById('formControName').value   = ""
-            document.getElementById('formControEmail').value  = ""
-            let checkbox_send_email = document.getElementById('formControSendEmail') 
-            checkbox_send_email.checked = false
-   
-          });
-
-
+        
 
 
       })();

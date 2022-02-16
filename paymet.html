@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Test Link&buy</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+            <a class="navbar-brand" href="./index.html">Test Link & Buy</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="">Payment</a>
+                </li> 
+                </ul>
+            </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-4">
+                    <h3>Example request payment</h3>
+                    <p><b>URL:</b> https://linkbuy.infile.com/api/pagos/ </p>
+                    <p><b>HEADER:</b> <pre id="headers-api"></pre></p>
+                    <p><b>BODY:</b> <pre id="obj-payment"></pre></p>
+                </div>
+
+
+                <div class="col-3">
+                    <h3>Request for create purchase and generate code transaccion</h3>
+                    <form>
+                        <div class="mb-3">
+    
+                            <label for="formControUserApi" class="form-label">Header User API</label>
+                            <input type="text" class="form-control" id="formControUserApi" value="" placeholder="">
+        
+                            <label for="formControLlaveApi" class="form-label">Header Key API</label>
+                            <input type="text" class="form-control" id="formControLlaveApi" value="" placeholder="">
+
+
+                            <label for="formControlTransaccionCode" class="form-label">Transaccion Code</label>
+                            <input type="text" class="form-control" id="formControlTransaccionCode" value="">
+        
+                            <label for="formControlCardNumber" class="form-label">Card Number</label>
+                            <input type="text" class="form-control" id="formControlCardNumber" value="">
+                            
+                            <label for="formControlExpMonth" class="form-label">Exp Month</label>
+                            <input type="text" class="form-control" id="formControlExpMonth" value="">
+
+                            <label for="formControlExpYear" class="form-label">Exp Year</label>
+                            <input type="text" class="form-control" id="formControlExpYear" value="">
+
+                            <label for="formControlCvv" class="form-label">Cvv</label>
+                            <input type="text" class="form-control" id="formControlCvv" value="">
+
+
+                        </div>
+
+                        <button type="button" id="btn-generate-data-payment" class="btn btn-primary">Generate Data Payment</button>
+                        <button type="button" id="btn-send-payment" class="btn btn-success" style="display:none;">Send Payment</button>
+                    </form>
+
+                    <pre id="new-object-payment"></pre>
+                </div>
+
+                <div class="col-5">
+                    <h3>Response to purchase</h3>
+                    <pre id="response-payment"></pre>
+                </div>
+    
+            </div>
+        </div>
+
+
+        <script type="text/javascript" >
+            (()=>{
+              'use strict'
+                const objPayment  = document.getElementById("obj-payment")
+                const heradersApi = document.getElementById("headers-api")
+                const objResponse = document.getElementById("response-payment")
+                const url = "https://linkbuy.infile.com/api/pagos/" 
+                //const objResponse = document.getElementById("response-purchase")
+
+                const headers_api = {
+                    "Content-Type": "application/json",
+                    "Usuario-Api": "",
+                    "Llave-Api": ""
+                }
+
+                const paymentJson = {
+                    "pago":{
+                        "codigo_transaccion":"", 
+                        "numero_tarjeta":"", 
+                        "mes_expiracion":"", 
+                        "anio_expiracion":"", 
+                        "cvv":"" 
+                    }
+                }
+
+                heradersApi.innerHTML = JSON.stringify(headers_api, null, 4)
+                objPayment.innerHTML = JSON.stringify(paymentJson, null, 4)
+
+                const btnDataPayment = document.querySelector('#btn-generate-data-payment');
+                const newObjPayment  = document.querySelector('#new-object-payment');
+                const btnCreatePayment = document.querySelector('#btn-send-payment');
+
+
+                btnDataPayment.addEventListener('click', ()=> {
+                    let header_user_api = document.getElementById('formControUserApi').value
+                    let header_key_api  = document.getElementById('formControLlaveApi').value
+
+                    let transaccionCode     = document.getElementById('formControlTransaccionCode').value
+                    let numberCard          = document.getElementById('formControlCardNumber').value
+                    let mothExp             = document.getElementById('formControlExpMonth').value
+                    let yearExp             = document.getElementById('formControlExpYear').value
+                    let cvv                 = document.getElementById('formControlCvv').value
+
+
+                    headers_api["Usuario-Api"] =  header_user_api
+                    headers_api["Llave-Api"]   =  header_key_api
+
+
+                    paymentJson["pago"]["codigo_transaccion"] = transaccionCode
+                    paymentJson["pago"]["numero_tarjeta"]     = numberCard
+                    paymentJson["pago"]["mes_expiracion"]     = mothExp
+                    paymentJson["pago"]["anio_expiracion"]    = yearExp
+                    paymentJson["pago"]["cvv"]                = cvv
+
+
+                    newObjPayment.innerHTML = JSON.stringify(paymentJson, null, 4)
+                    btnDataPayment.style.display = "none";
+                    btnCreatePayment.style.display = "block";
+
+                });
+
+
+                btnCreatePayment.addEventListener('click', async () =>{
+
+                    let responsePayment = await fetch(url,{
+                        method: "POST",
+                        headers: headers_api,
+                        body: JSON.stringify(paymentJson)
+                    });
+                    const content = await responsePayment.json();
+
+                    btnDataPayment.style.display = "block";
+                    btnCreatePayment.style.display = "none";
+                    newObjPayment.innerHTML = ""
+
+
+                    objResponse.innerHTML = JSON.stringify(content, null, 4);
+
+
+                    document.getElementById('formControlTransaccionCode').value     = ""
+                    document.getElementById('formControlCardNumber').value          = ""
+                    document.getElementById('formControlExpMonth').value            = ""
+                    document.getElementById('formControlExpYear').value             = ""
+                    document.getElementById('formControlCvv').value                 = ""
+
+
+                });
+
+            })();
+     
+        </script>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    </body>
+</html>
